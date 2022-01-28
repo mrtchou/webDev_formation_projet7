@@ -1,23 +1,34 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Home from '@/views/Home.vue';
-import About from '@views/About.vue';
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from '../views/Home';
+import Account from '../views/Account';
+import Forum from '../views/Forum';
 
+Vue.use(VueRouter)
 
+// Création des différentes routes
 const routes = [
-    {
-        name: 'Home',
-        path: '/',
-        component: Home,
-    },
-    {
-        name: 'About',
-        path: '/about',
-        component: About,
-    }
-];
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account
+  },
+  {
+    path: '/forum',
+    name: 'Forum',
+    component: Forum
+  }
+]
 
-
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
+// Création du router Vue
+const router = new VueRouter({
+  mode: 'history',
+  routes
 })
+
+export default router
