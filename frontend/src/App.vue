@@ -5,11 +5,25 @@
       <router-link to="/account">Mon Compte</router-link> |
       <router-link to="/forum">Forum</router-link>
     </div>
-    <router-view/>
+    <router-view />
+    <footer class="footer">
+      {{ copyright }}
+    </footer>
   </div>
 </template>
 
 
+
+<script>
+export default {
+  computed: {
+    copyright() {
+      const currentYear = new Date().getFullYear();
+      return `Copyright Groupomania ${currentYear}`;
+    },
+  },
+};
+</script>
 
 
 
@@ -28,21 +42,28 @@ body {
   padding: 0;
 }
 
-button, input, textarea {
-  background: #d14454;
-  color: #fff;
+button,
+input,
+textarea {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
 }
-
+.submit {
+  cursor: pointer;
+}
 button {
   padding: 5px;
   cursor: pointer;
+  background-color: rgb(138, 232, 230);
+  font-size: 0.85rem;
+  display: flexbox;
 }
 
 #app {
   font-family: sans-serif;
   font-weight: 500;
   text-align: center;
-  color: #FFF;
+  color: #fff;
 }
 
 #nav {
@@ -50,27 +71,25 @@ button {
 }
 
 .form-div {
-  margin: 20px;
-  label {
-    display: inline-block;
-    width: 170px;
-    &.keepConnexion {
-      text-align: left;
-      margin-left: 10px;
-    }
-    &.search {
-      width: 100px;
-    }
-  }
-  .submit {
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 5px;
-  }
+  margin: 7px;
 }
 
-.button {
-  font-size: 0.85rem;
-  margin: 20px;
+.form {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+.keepConnexion {
+  cursor: pointer;
+}
+
+footer {
+  background: red;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 </style>
