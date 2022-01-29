@@ -1,4 +1,4 @@
-# reseau_social
+# frontend
 
 ## Project setup
 ```
