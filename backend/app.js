@@ -1,27 +1,24 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const path = require("path");
 
-const usersRoutes = require('./routes/users');
-const articlesRoutes = require('./routes/articles')
-const commentsRoutes = require('./routes/comments');
-
-// Création de l'application Express
 const app = express();
 
-// Configuration des headers pour le CORS
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();
-});
+const db = require("./models/index");
+db.sequelize.sync({ force: false })
+  .then(() => {
+  console.log("Synchronisation de la base de données");
+  });
 
-// Utilisation de bodyParser pour extraire l'objet JSON de la réponse
+app.use(cors());
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Implémentations des routes
-app.use('/api/users', usersRoutes);
-app.use('/api/articles', articlesRoutes);
-app.use('/api/comments', commentsRoutes);
+app.use("/images", express.static(path.join(__dirname, "images")));
+
+require("./routes/user")(app);
+require("./routes/post")(app);
 
 module.exports = app;
