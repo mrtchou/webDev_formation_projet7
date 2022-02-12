@@ -1,33 +1,40 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Home from '../views/Home';
-import Account from '../views/Account';
-import Forum from '../views/Forum';
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+import Login from '../components/Login'
+import Signup from '../components/Signup'
+import Profile from '../components/Profile'
+import Forum from '../components/Forum'
+
 
 Vue.use(VueRouter)
 
-// Création des différentes routes
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/account',
-    name: 'Account',
-    component: Account
-  },
-  {
-    path: '/forum',
     name: 'Forum',
     component: Forum
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
   }
 ]
 
-// Création du router Vue
 const router = new VueRouter({
   mode: 'history',
+  base: process.env.BASE_URL,
   routes
 })
 
