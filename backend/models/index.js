@@ -1,9 +1,9 @@
-// module de connexion à la base de données
-
+//connexion à DB
 const Sequelize = require("sequelize");
-
-
 const db = {};
+
+
+
 
 // Configuration de Sequelize - connexion a la database
 const sequelize = new Sequelize('groupomania', 'root', 'root', {
