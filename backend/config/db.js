@@ -8,3 +8,4 @@ module.exports = {
   socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
 };
 
+///!!!!!!!!!a relier au fichier index.js dans models car les données ne doivent pas etre transmis avec le code pour DB
