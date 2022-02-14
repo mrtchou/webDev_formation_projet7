@@ -2,17 +2,28 @@
   <b-container>
     <b-row align-h="center">
       <b-col class="text-center" sm="10" lg="8">
-        <img class="icon-name" src="../assets/images/icon-name.png" alt="Logo and company name" />
+        <img
+          class="icon-name"
+          src="../assets/images/icon-name.png"
+          alt="Logo and company name"
+        />
         <h1 class="pb-4">Bienvenue sur votre réseau social d'entreprise</h1>
       </b-col>
     </b-row>
     <b-row align-h="center">
       <b-col cols="12" sm="10" md="10" lg="8">
         <h2 class="mb-3" align="center">Connectez-vous</h2>
-
         <!--Formulaire de connexion-->
         <b-row>
-          <b-col cols="12" offset-sm="1" sm="10" offset-md="2" md="8" offset-lg="2" lg="8">
+          <b-col
+            cols="12"
+            offset-sm="1"
+            sm="10"
+            offset-md="2"
+            md="8"
+            offset-lg="2"
+            lg="8"
+          >
             <b-card align="center" class="identification-box">
               <div align="center">
                 <b-form>
@@ -39,7 +50,9 @@
                 </b-form>
               </div>
             </b-card>
-            <p class="error-message font-weight-bold text-center mt-2">{{ error }}</p>
+            <p class="error-message font-weight-bold text-center mt-2">
+              {{ error }}
+            </p>
           </b-col>
         </b-row>
         <b-row class="mt-2 switch-page">
@@ -54,12 +67,13 @@
             lg="5"
           >
             <p>
-              Pas de compte ?
-              <router-link to="/signup">S'inscrire</router-link>
+              <router-link to="/signup">Pas de compte ?</router-link>
             </p>
           </b-col>
           <b-col align="center" class="mb-3" cols="12" sm="4" md="3" lg="3">
-            <b-button pill class="submit-button" type="submit" @click="login">Connexion</b-button>
+            <b-button class="btn btn-primary" type="submit" @click="login"
+              >Connexion</b-button
+            >
           </b-col>
         </b-row>
       </b-col>
@@ -74,7 +88,7 @@ export default {
   name: "Login",
   data() {
     return {
-      email: "", 
+      email: "",
       password: "",
       error: "",
     };
@@ -86,7 +100,8 @@ export default {
         email: this.email,
         password: this.password,
       };
-      this.$http.post(url + "users/login", user)
+      this.$http
+        .post(url + "users/login", user)
         .then((res) => {
           if (res.status === 200) {
             localStorage.setItem("currentUser", JSON.stringify(res.data));
@@ -96,8 +111,7 @@ export default {
         .catch((err) => {
           localStorage.clear();
           if (err.response.status === 401) {
-            this.error =
-              "Nous ne pouvons pas vous connecter. Vérifiez vos identifiants.";
+            this.error = "Veuillez a verifier les données saisie.";
           } else {
             this.error = "Un problème est survenu, veuillez réessayer";
           }
@@ -109,7 +123,7 @@ export default {
 
 <style scoped>
 .identification-box {
-  background-color: #ffd7d7;
+  background-color: #eef4f3;
 }
 .icon-name {
   height: 250px;
@@ -120,14 +134,7 @@ h1 {
 h2 {
   font-size: 1.4em;
 }
-.submit-button {
-  background-color: #ffd7d7;
-  color: black;
-  border: solid 1px #fd2d01;
-}
-.submit-button:hover {
-  background: #ffb3b3;
-}
+
 .error-message {
   color: #fd2d01;
 }
