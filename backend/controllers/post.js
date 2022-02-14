@@ -1,26 +1,20 @@
 const db = require("../models");
 const Post = db.post;
 
-
-
-
-
-
 // Création d'un post
 exports.createPost = (req, res, next) => {
   const post = {
     content: req.body.content,
     user_id: req.body.user_id,
   };
-  if (req.file) {
-    post.image = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
-  }
   Post.create(post)
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => res.status(500).json({ err }));
 };
+
+
 
 
 
@@ -36,9 +30,6 @@ exports.getOnePost = (req, res, next) => {
     })
     .catch((err) => res.status(500).json({ err }));
 };
-
-
-
 
 
 
@@ -62,10 +53,8 @@ exports.getAllUsersPosts = (req, res, next) => {
           id: post.id,
           content: post.content,
           user: post.user.pseudo,
-          userProfilePicture: post.user.profil_picture,
           userId: post.user.id,
           creationDate: post.created_at,
-          image: post.image,
           email: post.user.email,
         });
       });
@@ -73,6 +62,7 @@ exports.getAllUsersPosts = (req, res, next) => {
     })
     .catch((err) => res.status(500).json({ err }));
 };
+
 
 
 
@@ -97,10 +87,8 @@ exports.getAllPosts = (req, res, next) => {
           id: post.id,
           content: post.content,
           user: post.user.pseudo,
-          userProfilePicture: post.user.profil_picture,
           userId: post.user.id,
           creationDate: post.created_at,
-          image: post.image,
           email: post.user.email,
         });
       });
@@ -109,16 +97,19 @@ exports.getAllPosts = (req, res, next) => {
     .catch((err) => res.status(500).json({ err }));
 };
 
+
+
+
+
+
+
+
+
 //Modification d'un post
 exports.modifyPost = (req, res, next) => {
   const post = {
     content: req.body.content,
   };
-  if (req.file) {
-    post.image = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
-  } else if (req.body.image === "delete") {
-    post.image = "";
-  }
   Post.update(post, {
     where: { id: req.params.id },
     returning: true, //Option Sequelize qui permet de retourner le post
@@ -127,6 +118,13 @@ exports.modifyPost = (req, res, next) => {
     .then(() => res.status(200).json({ message: "post modified" }))
     .catch((err) => res.status(404).json({ err }));
 };
+
+
+
+
+
+
+
 
 //Suppression d'un post
 exports.deletePost = (req, res, next) => {
