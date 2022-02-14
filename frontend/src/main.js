@@ -17,7 +17,7 @@ Vue.use(IconsPlugin)
 
 Vue.config.productionTip = true
 
-new Vue({
+new Vue(
   router,
   render: h => h(App)
 }).$mount('#app')
