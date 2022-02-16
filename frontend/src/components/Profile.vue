@@ -16,7 +16,7 @@
             <b-card class="identification-box">
               <!--Formulaire-->
               <div align="center">
-                <label for="pseudo">Pseudo</label>
+                <label for="pseudo">Modifier le pseudo</label>
                 <b-form-input
                   id="input-1"
                   class="mb-3 input"
@@ -25,7 +25,7 @@
                   maxlength="10"
                   @input="lenghtCheck(10, user.pseudo, 'pseudo')"
                 ></b-form-input>
-                <label for="email-adress">Adresse email</label>
+                <label for="email-adress">Modifier l'adresse email</label>
                 <b-form-input
                   id="input-2"
                   class="mb-3 input"
@@ -65,7 +65,7 @@
           <b-col cols="5" sm="3" md="3" lg="3">
             <div>
               <b-button pill @click="modifyUser" class="send-button"
-                >Modifier</b-button
+                >Valider les modifications</b-button
               >
             </div>
           </b-col>
@@ -130,7 +130,7 @@ export default {
     error() {
       setTimeout(() => {
         this.error = "";
-      }, 3000);
+      }, 10000);
     },
   },
   computed: {
@@ -151,8 +151,9 @@ export default {
   },
 
   methods: {
+    //limitation du nombre de caracteres ave affichage message en plus de limitation html
     lenghtCheck(length, object, message) {
-      if (object.length === length) {
+      if (object.length > 30) {
         this.error = "Votre " + message + " est trop long";
       } else {
         this.error = "";
@@ -160,7 +161,9 @@ export default {
     },
 
     switchDisplayProfile() {
-      //dès que clic sur modifier ou anuler retour au forum
+      //dès que clic sur modifier ou anuler retour au forum (emission vers le parent)
+      //événement est émis, le composant parent qui utilise le composant enfant
+      // est capable d'écouter l'événement via la directive  v-on(@)
       let emitDisplayProfile = !this.displayProfile;
       this.$emit("display-profile", emitDisplayProfile);
     },
@@ -202,14 +205,17 @@ export default {
           this.error = "Veuillez réessayer";
         });
     },
+    //annulation modification profil, remet tous les infos comme ils etaient plus retour au forum
     cancelModification() {
       this.getUser();
       this.password = "";
+      this.pseudo = "";
       this.displayModifyPassword = true;
+      this.switchDisplayProfile();
     },
     deleteUser() {
       let deleteConfirm = confirm(
-        //apparition de la fenêtre popup
+        //apparition de la fenêtre popup pour confirmer delete user
         "Attention Cette action est definitive."
       );
       if (deleteConfirm) {
