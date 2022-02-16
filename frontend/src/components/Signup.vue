@@ -116,9 +116,9 @@ export default {
     };
   },
   methods: {
-    //Fonction de vérification de la longueur des données
+    //limitation du nombre de caracteres ave affichage message en plus de limitation html
     lenghtCheck(length, object, message) {
-      if (object.length === length) {
+      if (object.length > 30) {
         this.error = "Votre " + message + " est trop long";
       } else {
         this.error = "";
