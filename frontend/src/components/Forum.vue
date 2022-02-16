@@ -11,11 +11,13 @@
       :token="token"
       :displayProfile="displayProfile"
     />
+
     <!--Affichage de l'en-tête d'un utilisateur dans nouvel affichage-->
     <b-row v-show="displayPostByProfile" class="mb-4">
       <b-col align="center" lg="5">
         <h1>Profil de {{ userName }}</h1>
         <p>{{ userEmail }}</p>
+
         <div>
           <b-button
             pill
@@ -30,36 +32,37 @@
         </div>
       </b-col>
     </b-row>
+
     <!--Insertion article-->
     <div v-show="!displayPostByProfile">
-      <b-row class="mb-2" v-show="!displayProfile">
-        <b-col cols="8" sm="9" md="8" lg="8">
+      <b-row v-show="!displayProfile">
+        <b-col>
           <b-form-textarea
-            maxlength="2047"
+            maxlength="1000"
             id="textarea-rows"
-            placeholder="Prenez la parole !"
+            placeholder="Partagez un texte qui merite d'etre partagé avec vos collègues!"
             @input="lenghtCheck"
             rows="3"
             class="text-area"
             v-model="postTextArea"
           ></b-form-textarea>
+
           <p class="error-message font-weight-bold text-center mt-2">
             {{ postError }}
           </p>
+
           <div>
             <b-button
-              pill
               size="sm"
-              class="mb-3 send-button"
+              class="mb-2 bg-primary text-white btn-lg btn-block"
               @click="createPost"
-              >Envoyer</b-button
+              >Poster</b-button
             >
             <b-button
-              pill
               size="sm"
-              class="mb-3 reset-button"
+              class="mb-3 reset-button btn-lg btn"
               @click="resetPost"
-              >Annuler</b-button
+              >Effacer tout le texte</b-button
             >
           </div>
         </b-col>
@@ -130,6 +133,7 @@ export default {
         }
       }
     },
+    //si affichage du profil, alors cache les articles
     displayProfile() {
       if (this.displayProfile === true) {
         this.displayPostByProfile = false;
@@ -230,8 +234,10 @@ body {
 
 <style scoped>
 .text-area {
-  resize: none;
   border: 1px solid#c4f5bd;
+  display: flex;
+
+  margin-right: auto;
 }
 .text-area:focus {
   outline: none !important;
@@ -251,23 +257,17 @@ body {
 .send-button:hover {
   background: #2eee27;
 }
-.reset-button {
-  background-color: transparent;
-  border: solid 1px #e34e4e;
-  color: #e42701;
-}
+
 .reset-button:hover {
   background: #ffe4e4;
 }
-.button-col {
-  display: flex;
-  width: 7em;
-  flex-direction: column;
-}
-.error-message {
-  color: #fd2d01;
-}
 
+.post-header {
+  background-color: #ffd7d7;
+  font-size: 1em;
+  border-radius: 80px 30px;
+  text-align: center;
+}
 .back-button {
   background-color: transparent;
   border: solid 1px #ffb3b3;
@@ -277,11 +277,32 @@ body {
   background: #ffe4e4;
 }
 
+.button-col {
+  display: flex;
+  width: 7em;
+  flex-direction: column;
+}
+.error-message {
+  color: #fd2d01;
+}
+
+.breadcrumb {
+  cursor: pointer;
+}
+.breadcrumb:hover {
+  background-color: #ebe0e0;
+}
+
 @media screen and (max-width: 767px) {
   .button-col {
     flex-direction: row-reverse;
     justify-content: space-evenly;
     width: auto;
+  }
+}
+@media screen and (max-width: 560px) {
+  h1 {
+    font-size: 2em;
   }
 }
 </style>
