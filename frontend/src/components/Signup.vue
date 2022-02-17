@@ -38,7 +38,7 @@
                     maxlength="10"
                     @input="lenghtCheck(10, pseudo, 'pseudo')"
                     required
-                    placeholder="Choisissez votre pseudo"
+                    placeholder="Entrez votre pseudo"
                     @keyup.enter="signup"
                   ></b-form-input>
                   <label for="email-adress">Adresse email *</label>
@@ -62,7 +62,7 @@
                     maxlength="16"
                     @input="lenghtCheck(16, password, 'mot de passe')"
                     required
-                    placeholder="Choisissez un mot de passe"
+                    placeholder="Entrez votre mot de passe"
                     @keyup.enter="signup"
                   ></b-form-input>
                 </b-form>
@@ -84,11 +84,14 @@
             offset-lg="2"
             lg="5"
           >
-            <p><router-link to="/login">Déjà un compte?</router-link></p>
+            <p>
+              Déjà inscrit ?
+              <router-link to="/login">Se connecter</router-link>
+            </p>
           </b-col>
-          <b-col align="center" cols="12" sm="4" md="3" lg="3">
-            <b-button class="btn btn-primary" type="submit" @click="signup"
-              >Valider</b-button
+          <b-col align="center" class="mb-3" cols="12" sm="4" md="3" lg="3">
+            <b-button pill class="submit-button" type="submit" @click="signup"
+              >Inscription</b-button
             >
           </b-col>
         </b-row>
@@ -116,9 +119,9 @@ export default {
     };
   },
   methods: {
-    //limitation du nombre de caracteres ave affichage message en plus de limitation html
+    //Fonction de vérification de la longueur des données
     lenghtCheck(length, object, message) {
-      if (object.length > 30) {
+      if (object.length === length) {
         this.error = "Votre " + message + " est trop long";
       } else {
         this.error = "";
@@ -130,12 +133,13 @@ export default {
         pseudo: this.pseudo,
         email: this.email,
         password: this.password,
+        profil_picture: url.substring(0, url.length - 4) + "images/avatar.png",
       };
       if (!this.emailRegex.test(this.email)) {
         return (this.error = "Vous devez renseigner une adresse email valide");
       } else if (!this.pseudoRegex.test(this.pseudo)) {
         return (this.error =
-          "Votre pseudo doit contenir au moins 5 ou plus de caractères");
+          "Votre pseudo doit contenir au moins 3 caractères");
       } else if (!this.passwordRegex.test(this.password)) {
         return (this.error =
           "Votre mot de passe doit contenir au moins 8 caractères et au moins 1 lettre et 1 chiffre");
@@ -154,7 +158,7 @@ export default {
               })
               .catch(() => {
                 localStorage.clear();
-                this.error = "Veuillez réessayer";
+                this.error = "Un problème est survenu, veuillez réessayer";
               });
           }
         })
@@ -162,7 +166,7 @@ export default {
           if (err.response.status === 409) {
             this.error = "Adresse email déjà utilisée";
           } else {
-            this.error = "Veuillez réessayer";
+            this.error = "Un problème est survenu, veuillez réessayer";
           }
         });
     },
@@ -174,11 +178,9 @@ export default {
 .identification-box {
   background-color: #eef4f3;
 }
-
 h1 {
   font-size: 17px;
 }
-
 img {
   height: 10vw;
   float: none;
@@ -186,7 +188,6 @@ img {
 .error-message {
   color: #fd2d01;
 }
-
 .input:hover {
   outline: none !important;
   border: solid 1px #fd2d01;
