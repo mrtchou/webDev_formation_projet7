@@ -7,19 +7,14 @@ exports.createPost = (req, res, next) => {
     content: req.body.content,
     user_id: req.body.user_id,
   };
+
+
   Post.create(post)
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => res.status(500).json({ err }));
 };
-
-
-
-
-
-
-
 
 // Récupération d'un post selon id
 exports.getOnePost = (req, res, next) => {
@@ -30,11 +25,6 @@ exports.getOnePost = (req, res, next) => {
     })
     .catch((err) => res.status(500).json({ err }));
 };
-
-
-
-
-
 
 // Récupération de tous les posts par utilisateur
 exports.getAllUsersPosts = (req, res, next) => {
@@ -63,14 +53,6 @@ exports.getAllUsersPosts = (req, res, next) => {
     .catch((err) => res.status(500).json({ err }));
 };
 
-
-
-
-
-
-
-
-
 // Récupération de tous les posts
 exports.getAllPosts = (req, res, next) => {
   Post.findAll({
@@ -97,14 +79,6 @@ exports.getAllPosts = (req, res, next) => {
     .catch((err) => res.status(500).json({ err }));
 };
 
-
-
-
-
-
-
-
-
 //Modification d'un post
 exports.modifyPost = (req, res, next) => {
   const post = {
@@ -118,13 +92,6 @@ exports.modifyPost = (req, res, next) => {
     .then(() => res.status(200).json({ message: "post modified" }))
     .catch((err) => res.status(404).json({ err }));
 };
-
-
-
-
-
-
-
 
 //Suppression d'un post
 exports.deletePost = (req, res, next) => {
