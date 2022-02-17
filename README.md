@@ -21,13 +21,10 @@ Vous pouvez utiliser ces commandes SQL pour plus de simplicité:
 
 ```
 CREATE DATABASE groupomania;
+```
+Cette commande doit automatiquement creer les tables dans la DB groupomania (si l'utilisateur de mysql a TOUS les privilèges - reglages dans mysql...)
 
-CREATE USER 'groupomania'@'localhost' IDENTIFIED BY 'root;
-```
-Donnez les droits sur la base de données groupomania à l'utilisateur créé :
-```
-GRANT ALL PRIVILEGES ON groupomania.* TO 'groupomania'@'localhost';
-```
+
 
 puis dans le terminal, position backend, executer nodemon server, ceci doit lancer la connexion au serveur
 
