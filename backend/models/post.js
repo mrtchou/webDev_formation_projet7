@@ -13,11 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       content: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      image: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(2047),
         allowNull: true,
       },
       user_id: {
@@ -40,7 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
     },
-
+    {
+      underscored: true,
+    }
   );
   return Post;
 };
