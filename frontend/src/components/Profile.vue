@@ -55,16 +55,17 @@
           >
             <div>
               <b-button
-                pill
                 @click="cancelModification"
-                class="ml-3 reset-button"
-                >Annuler</b-button
+                class="mb-2 bg-secondary text-white btn-lg"
+                >Annuler les modifications</b-button
               >
             </div>
           </b-col>
           <b-col cols="5" sm="3" md="3" lg="3">
             <div>
-              <b-button pill @click="modifyUser" class="send-button"
+              <b-button
+                @click="modifyUser"
+                class="mb-2 bg-primary text-white btn-lg"
                 >Valider les modifications</b-button
               >
             </div>
@@ -76,7 +77,7 @@
               <b-button
                 pill
                 size="sm"
-                class="mb-3 delete-button"
+                class="btn btn-danger"
                 @click="deleteUser"
                 >Supprimer mon profil</b-button
               >
