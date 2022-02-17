@@ -1,22 +1,24 @@
-//connexion à DB
+const dbConfig = require("../config/db");
+
 const Sequelize = require("sequelize");
-const db = {};
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+  host: dbConfig.HOST,
+  user: dbConfig.USER,
+  password: dbConfig.PASSWORD,
+  database: dbConfig.DB,
+  socketPath: dbConfig.SOCKET,
+  port: dbConfig.PORT,
+  dialect: dbConfig.DIALECT,
 
-
-
-
-// Configuration de Sequelize - connexion a la database
-const sequelize = new Sequelize('groupomania', 'root', 'root', {
-  host: 'localhost',
-  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
-  port: 8889,
-  user: 'root',
-  password: 'root',
-  database: 'groupomania',
-  dialect: 'mysql'
 });
 
 
+
+
+
+
+
+const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
