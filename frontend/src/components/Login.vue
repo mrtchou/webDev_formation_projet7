@@ -13,6 +13,7 @@
     <b-row align-h="center">
       <b-col cols="12" sm="10" md="10" lg="8">
         <h2 class="mb-3" align="center">Connectez-vous</h2>
+
         <!--Formulaire de connexion-->
         <b-row>
           <b-col
@@ -67,11 +68,12 @@
             lg="5"
           >
             <p>
-              <router-link to="/signup">Pas de compte ?</router-link>
+              Pas de compte ?
+              <router-link to="/signup">S'inscrire</router-link>
             </p>
           </b-col>
           <b-col align="center" class="mb-3" cols="12" sm="4" md="3" lg="3">
-            <b-button class="btn btn-primary" type="submit" @click="login"
+            <b-button pill class="submit-button" type="submit" @click="login"
               >Connexion</b-button
             >
           </b-col>
@@ -111,7 +113,8 @@ export default {
         .catch((err) => {
           localStorage.clear();
           if (err.response.status === 401) {
-            this.error = "Veuillez a verifier les données saisie.";
+            this.error =
+              "Nous ne pouvons pas vous connecter. Vérifiez vos identifiants.";
           } else {
             this.error = "Un problème est survenu, veuillez réessayer";
           }
@@ -134,7 +137,6 @@ h1 {
 h2 {
   font-size: 1.4em;
 }
-
 .error-message {
   color: #fd2d01;
 }
