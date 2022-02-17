@@ -22,10 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      profil_picture: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       is_admin: {
         type: DataTypes.BOOLEAN,
         defaultValue: 0,
