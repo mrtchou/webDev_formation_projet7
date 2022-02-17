@@ -1,225 +1,225 @@
 <template>
-  <b-container display="flex">
-    <Header
-      @display-profile="switchDisplayProfile"
-      :displayProfile="displayProfile"
-    />
-    <Profile
-      @display-profile="switchDisplayProfile"
-      v-show="displayProfile"
-      :userId="userId"
-      :token="token"
-      :displayProfile="displayProfile"
-    />
-
-    <!--Affichage de l'en-tête d'un utilisateur dans nouvel affichage-->
-    <b-row v-show="displayPostByProfile" class="mb-4">
-      <b-col align="center" lg="5">
-        <h1>Profil de {{ userName }}</h1>
-        <p>{{ userEmail }}</p>
-
-        <div>
-          <b-button
-            pill
-            size="sm"
-            class="back-button"
-            @click="
-              switchDisplayPostByProfile(false);
-              getPosts();
-            "
-            >Retour vers le forum</b-button
-          >
+  <b-container>
+    <b-row>
+      <b-col
+        sm="12"
+        offset-md="1"
+        md="10"
+        offset-lg="2"
+        lg="8"
+        class="post mb-4"
+      >
+        <div class="post-header mb-3">
+          <p class="mb-0" align="center">
+            <span class="user-name font-weight-bolder" @click="getUsersPosts">
+              {{ post.user }}
+            </span>
+            le {{ post.creationDate }}
+          </p>
         </div>
+
+        <!-- Vue pour modification -->
+        <b-row v-show="displayModifyPost">
+          <b-col cols="4" sm="3" md="2" lg="2" align="center"> </b-col>
+          <b-col cols="8" sm="8=9" md="8" lg="8" align="center">
+            <b-form-textarea
+              class="text-area"
+              rows="3"
+              maxlength="1000"
+              @input="lenghtCheck"
+              v-model="modifyTextArea"
+            ></b-form-textarea>
+            <p align="center" class="error-message font-weight-bold mt-2">
+              {{ error }}
+            </p>
+          </b-col>
+          <b-col cols="12" sm="12" md="2" lg="2" align="center">
+            <div class="button-col">
+              <b-button
+                pill
+                size="sm"
+                class="mb-3 send-button"
+                @click="modifyPost"
+                >Envoyer</b-button
+              >
+              <b-button
+                pill
+                size="sm"
+                class="mb-3 reset-button"
+                @click="resetModifyPost"
+                >Annuler</b-button
+              >
+            </div>
+          </b-col>
+        </b-row>
+
+        <!-- Vue affichage -->
+        <b-row v-show="!displayModifyPost">
+          <b-col cols="12" sm="10" md="7" lg="7" v-show="displayPostImage">
+            <div class="post-content pr-2 pl-2">{{ post.content }}</div>
+          </b-col>
+          <b-col cols="12" sm="10" md="10" lg="10" v-show="!displayPostImage">
+            <div class="post-content pr-2 pl-2">{{ post.content }}</div>
+          </b-col>
+          <b-col cols="12" sm="2" md="2" lg="2">
+            <div align="center">
+              <b-button-group v-show="displayDropdownButton">
+                <b-dropdown
+                  variant="outline-danger"
+                  size="sm"
+                  right
+                  text=". . ."
+                >
+                  <b-dropdown-item
+                    v-if="userId === post.userId"
+                    @click="displaySwitch"
+                    >Modifier</b-dropdown-item
+                  >
+                  <b-dropdown-item
+                    v-if="admin || userId === post.userId"
+                    @click="deletePost"
+                    >Supprimer</b-dropdown-item
+                  >
+                </b-dropdown>
+              </b-button-group>
+            </div>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
-
-    <!--Insertion article-->
-    <div v-show="!displayPostByProfile">
-      <b-row v-show="!displayProfile">
-        <b-col>
-          <b-form-textarea
-            maxlength="1000"
-            id="textarea-rows"
-            placeholder="Partagez un texte qui merite d'etre partagé avec vos collègues!"
-            @input="lenghtCheck"
-            rows="3"
-            class="text-area"
-            v-model="postTextArea"
-          ></b-form-textarea>
-
-          <p class="error-message font-weight-bold text-center mt-2">
-            {{ postError }}
-          </p>
-
-          <div>
-            <b-button
-              size="sm"
-              class="mb-2 bg-primary text-white btn-lg btn-block"
-              @click="createPost"
-              >Poster</b-button
-            >
-            <b-button
-              size="sm"
-              class="mb-3 reset-button btn-lg btn"
-              @click="resetPost"
-              >Effacer tout le texte</b-button
-            >
-          </div>
-        </b-col>
-      </b-row>
-      <b-row
-        v-for="postData in posts"
-        :key="postData.id"
-        v-show="!displayProfile"
-      >
-        <b-col>
-          <Post
-            @users-posts="usersPosts"
-            @post-by-profile="switchDisplayPostByProfile"
-            :post="postData"
-            :admin="admin"
-            :userId="userId"
-            :token="token"
-          ></Post>
-        </b-col>
-      </b-row>
-    </div>
   </b-container>
-</template>
- 
+</template>           
+
 <script>
-import Header from "./Header.vue";
-import Post from "./Post.vue";
-import Profile from "./Profile.vue";
 import { url } from "../main";
 
 export default {
-  name: "Forum",
-  components: {
-    Header,
-    Post,
-    Profile,
-  },
+  name: "Post",
 
   data() {
     return {
-      postError: "",
-      userProfilePicture: "",
-      userName: "",
-      userEmail: "",
-      displayPostByProfile: false,
-      displayCommands: false,
-      displayProfile: false,
-      posts: [],
-      users: [],
-      token: "",
-      userId: "",
-      admin: false,
-      error: {},
-      postTextArea: "",
-      testKey: "",
+      displayModifyPost: false,
+      displayDropdownButton: false,
+      modifyTextArea: this.post.content,
+      uri: "posts/" + this.post.id,
+      error: "",
+      headers: {
+        headers: {
+          Authorization: this.token,
+          userId: this.userId,
+        },
+      },
     };
   },
-  watch: {
-    //Surveille les posts dans le cas de rechargement
-    posts() {
-      if (this.posts !== "undefined" && this.posts.length > 0) {
-        //evite erreur si aucun post publié
-        this.userName = this.posts[0].user;
-        if (this.posts[0].email.startsWith("ancien employé")) {
-          this.userEmail = "";
-        } else {
-          this.userEmail = this.posts[0].email;
-        }
-      }
-    },
-    //si affichage du profil, alors cache les articles
-    displayProfile() {
-      if (this.displayProfile === true) {
-        this.displayPostByProfile = false;
-      }
-    },
-  },
   computed: {
-    headers() {
-      return { headers: { Authorization: this.token, userId: this.userId } };
+    body() {
+      //content du post pour envoyer à l'api
+      return {
+        content: this.modifyTextArea,
+      };
     },
   },
-  //Validation du state de l'utilisateur
-  created() {
-    this.getUser();
+  props: {
+    post: {
+      type: Object,
+    },
+    userId: {
+      type: String,
+    },
+    token: {
+      type: String,
+    },
+    admin: {
+      type: Boolean,
+    },
   },
-  //construction du composant post
-  mounted() {
-    this.getPosts();
+  created() {
+    this.switchDropdownButton();
   },
 
   methods: {
     lenghtCheck() {
-      if (this.postTextArea.length === 1000) {
-        this.postError = "Votre message est trop long";
+      if (this.modifyTextArea.length > 1000) {
+        this.error = "Votre message est trop long";
       } else {
-        this.postError = "";
+        this.error = "";
+      }
+    },
+    getUsersPosts() {
+      this.$http
+        .get(url + "posts/users/" + this.post.userId, this.headers)
+        .then((res) => {
+          this.$emit("users-posts", res.data);
+          this.$emit("post-by-profile", true);
+        });
+    },
+
+    //affiche le dropbutton si admin sinon pas d'affichage
+    switchDropdownButton() {
+      if (this.admin === true || this.userId === this.post.userId) {
+        this.displayDropdownButton = !this.displayDropdownButton;
       }
     },
 
-    createPost() {
-      if (!this.postTextArea) {
-        this.postError = "Votre publication est vide";
-        setTimeout(() => {
-          this.postError = "";
-        }, 3000);
-        return;
-      }
-      let formData = new FormData();
-      formData.append("content", this.postTextArea);
-      formData.append("user_id", this.userId);
+    displaySwitch() {
+      //permet de passer de l'affichage du post à la modification
+      (this.displayModifyPost = !this.displayModifyPost),
+        (this.displayDropdownButton = !this.displayDropdownButton);
+    },
+
+    getOnePost() {
+      //rafraichir le post après annulation de modification
       this.$http
-        .post(url + "posts", formData, this.headers)
-        .then(() => {
-          this.resetPost();
-          this.getPosts();
-        })
-        .catch(() => {
-          this.postError = "Un problème est survenu, veuillez réessayer";
+        .get(url + "posts/" + this.post.id, this.headers)
+        .then((res) => {
+          this.modifyTextArea = res.data.content;
         });
     },
-    getPosts() {
-      //utilisée pour charger les posts et pour recharger le composant
-      this.$http.get(url + "posts", this.headers).then((res) => {
-        this.posts = res.data;
-      });
+
+    deletePost() {
+      this.$http
+        .delete(url + this.uri, this.headers)
+        .then(() => {
+          this.$parent.getPosts();
+        })
+        .catch(() => {
+          this.error = "Un problème est survenu, veuillez réessayer";
+        });
     },
-    usersPosts(data) {
-      //charger post par utilisateur
-      this.posts = data;
+
+    sendModifyPost(data) {
+      this.$http
+        .put(url + this.uri, data, this.headers)
+        .then(() => {
+          this.$parent.getPosts(); //rafraichir tous les posts
+
+          this.displaySwitch();
+        })
+        .catch(() => {
+          this.error = "Un problème est survenu, veuillez réessayer";
+        });
     },
-    switchDisplayPostByProfile(data) {
-      this.displayPostByProfile = data;
-    },
-    switchDisplayProfile(data) {
-      this.displayProfile = data;
-    },
-    //lancé a created pour vérifier l'authenticité du user et si admin ou pas
-    getUser() {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      if (currentUser) {
-        this.token = currentUser.token;
-        this.userId = currentUser.userId;
-        this.$http
-          .get(url + "users/" + currentUser.userId, this.headers)
-          .then((res) => {
-            this.admin = res.data.admin;
-          })
-          .catch(() => {
-            this.$router.push("/login");
-          });
+
+    modifyPost() {
+      if (
+        (this.file === "delete" || this.file === "") &&
+        this.body.content === ""
+      ) {
+        this.deletePost();
+      } else if (this.file === "delete") {
+        let formData = new FormData();
+        formData.append("content", this.body.content);
+        this.sendModifyPost(formData);
       } else {
-        this.$router.push("/login");
+        let formData = new FormData();
+        formData.append("content", this.body.content);
+        this.sendModifyPost(formData);
       }
     },
-    resetPost() {
-      this.postTextArea = "";
+
+    resetModifyPost() {
+      this.getOnePost();
+      this.displaySwitch();
     },
   },
 };
@@ -236,7 +236,6 @@ body {
 .text-area {
   border: 1px solid#c4f5bd;
   display: flex;
-
   margin-right: auto;
 }
 .text-area:focus {
@@ -257,11 +256,9 @@ body {
 .send-button:hover {
   background: #2eee27;
 }
-
 .reset-button:hover {
   background: #ffe4e4;
 }
-
 .post-header {
   background-color: #ffd7d7;
   font-size: 1em;
@@ -276,7 +273,6 @@ body {
 .back-button:hover {
   background: #ffe4e4;
 }
-
 .button-col {
   display: flex;
   width: 7em;
@@ -285,14 +281,12 @@ body {
 .error-message {
   color: #fd2d01;
 }
-
 .breadcrumb {
   cursor: pointer;
 }
 .breadcrumb:hover {
   background-color: #ebe0e0;
 }
-
 @media screen and (max-width: 767px) {
   .button-col {
     flex-direction: row-reverse;
