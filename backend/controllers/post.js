@@ -84,6 +84,7 @@ exports.modifyPost = (req, res, next) => {
   const post = {
     content: req.body.content,
   };
+
   Post.update(post, {
     where: { id: req.params.id },
     returning: true, //Option Sequelize qui permet de retourner le post
