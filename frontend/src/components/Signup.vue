@@ -181,10 +181,6 @@ export default {
 h1 {
   font-size: 17px;
 }
-img {
-  height: 10vw;
-  float: none;
-}
 .error-message {
   color: #fd2d01;
 }
