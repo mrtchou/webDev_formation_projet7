@@ -6,7 +6,7 @@
           <img
             class="logo"
             src="../assets/images/icon-header.png"
-            alt="Logo company name"
+            alt="Logo and company name"
           />
         </router-link>
       </b-navbar-brand>
@@ -17,22 +17,17 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-show="!displayProfile" @click="switchDisplayProfile"
-            >Espace personnel</b-nav-item
+            >Mon espace personnel</b-nav-item
           >
           <b-nav-item v-show="displayProfile" @click="switchDisplayProfile"
             >Retourner sur le Forum</b-nav-item
           >
-
           <b-nav-item @click="logout">Déconnexion</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
   </b-container>
 </template>
-
-
-
- 
  
 <script>
 export default {
