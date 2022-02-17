@@ -55,12 +55,10 @@
 
         <!-- Vue affichage -->
         <b-row v-show="!displayModifyPost">
-          <b-col cols="12" sm="10" md="7" lg="7" v-show="displayPostImage">
+          <b-col cols="12" sm="10" md="7" lg="7">
             <div class="post-content pr-2 pl-2">{{ post.content }}</div>
           </b-col>
-          <b-col cols="12" sm="10" md="10" lg="10" v-show="!displayPostImage">
-            <div class="post-content pr-2 pl-2">{{ post.content }}</div>
-          </b-col>
+
           <b-col cols="12" sm="2" md="2" lg="2">
             <div align="center">
               <b-button-group v-show="displayDropdownButton">
