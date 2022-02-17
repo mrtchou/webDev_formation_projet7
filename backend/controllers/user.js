@@ -25,6 +25,7 @@ exports.createUser = (req, res, next) => {
         email: req.body.email,
         pseudo: req.body.pseudo,
         password: hash,
+        profil_picture: req.body.profil_picture,
         is_admin: req.body.is_admin,
       };
       User.create(user)
@@ -83,6 +84,7 @@ exports.getOneUser = (req, res, next) => {
       }
       res.status(200).json({
         admin: user.is_admin,
+        profilePicture: user.profil_picture,
         userId: user.id,
         email: user.email,
         pseudo: user.pseudo,
@@ -105,7 +107,9 @@ exports.modifyUser = (req, res, next) => {
     password,
     is_admin: req.body.is_admin,
   };
-
+  if (req.file) {
+    user.profil_picture = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+  }
   User.update(user, {
     where: { id: req.params.id },
   })
@@ -125,10 +129,11 @@ exports.modifyUser = (req, res, next) => {
 exports.deleteUser = (req, res, next) => {
   User.update(
     {
-      email: "ancien employé" + Date.now(),
+
       pseudo: "ancien employé",
-      password: ancienCollegues,
-      is_admin: 0,
+      password: "effacé " + Date.now(),
+      profil_picture: "http://localhost:3000/images/avatar.png",
+
     },
     {
       where: { id: req.params.id },
