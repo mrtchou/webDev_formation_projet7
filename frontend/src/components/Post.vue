@@ -154,6 +154,7 @@ export default {
 
     //affiche le dropbutton si admin sinon pas d'affichage
     switchDropdownButton() {
+    
       if (this.admin === true || this.userId === this.post.userId) {
         this.displayDropdownButton = !this.displayDropdownButton;
       }
