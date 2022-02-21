@@ -77,8 +77,7 @@
             @users-posts="usersPosts"
             @post-by-profile="switchDisplayPostByProfile"
             :post="postData"
-            :admin="admin"
-            :userId="userId"
+           :isAdmin="isAdmin"
             :token="token"
           ></Post>
         </b-col>
@@ -114,7 +113,7 @@ export default {
       users: [],
       token: "",
       userId: "",
-      admin: false,
+      admin: "",
       error: {},
       postTextArea: "",
       testKey: "",
@@ -168,7 +167,7 @@ export default {
         this.postError = "Votre publication est vide";
         setTimeout(() => {
           this.postError = "";
-        }, 3000);
+        }, 7000);
         return;
       }
       let formData = new FormData();
@@ -209,7 +208,7 @@ export default {
         this.$http
           .get(url + "users/" + currentUser.userId, this.headers)
           .then((res) => {
-            this.admin = res.data.admin;
+            this.admin = res.data.admin; //a corriger apres la reglage backend mysql
           })
           .catch(() => {
             this.$router.push("/login");
@@ -225,84 +224,5 @@ export default {
 };
 </script>
 
-<style>
-body {
-  margin: 5%;
-  font-family: Arial, Helvetica, sans-serif;
-}
-</style>
 
-<style scoped>
-.text-area {
-  border: 1px solid#c4f5bd;
-  display: flex;
 
-  margin-right: auto;
-}
-.text-area:focus {
-  outline: none !important;
-  border: 1px solid #73ec3f;
-  box-shadow: 0 0 10px #ffa5a5;
-}
-.post {
-  border-bottom: 0.15em solid #fd2d01;
-  padding-right: 0;
-  padding-left: 0;
-}
-.send-button {
-  background-color: #6bfaa2;
-  color: black;
-  border: solid 1px #a6fa57;
-}
-.send-button:hover {
-  background: #2eee27;
-}
-
-.reset-button:hover {
-  background: #ffe4e4;
-}
-
-.post-header {
-  background-color: #ffd7d7;
-  font-size: 1em;
-  border-radius: 80px 30px;
-  text-align: center;
-}
-.back-button {
-  background-color: transparent;
-  border: solid 1px #ffb3b3;
-  color: #e42701;
-}
-.back-button:hover {
-  background: #ffe4e4;
-}
-
-.button-col {
-  display: flex;
-  width: 7em;
-  flex-direction: column;
-}
-.error-message {
-  color: #fd2d01;
-}
-
-.breadcrumb {
-  cursor: pointer;
-}
-.breadcrumb:hover {
-  background-color: #ebe0e0;
-}
-
-@media screen and (max-width: 767px) {
-  .button-col {
-    flex-direction: row-reverse;
-    justify-content: space-evenly;
-    width: auto;
-  }
-}
-@media screen and (max-width: 560px) {
-  h1 {
-    font-size: 2em;
-  }
-}
-</style>
