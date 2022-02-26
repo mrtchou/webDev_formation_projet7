@@ -1,6 +1,9 @@
 <template>
   <b-container display="flex">
-    <Header @display-profile="switchDisplayProfile" :displayProfile="displayProfile" />
+    <Header
+      @display-profile="switchDisplayProfile"
+      :displayProfile="displayProfile"
+    />
     <Profile
       @display-profile="switchDisplayProfile"
       v-show="displayProfile"
@@ -9,59 +12,12 @@
       :displayProfile="displayProfile"
     />
 
-    <!--Insertion post et image-->
-    <div v-show="!displayPostByProfile">
-      <b-row class="mb-2" v-show="!displayProfile">
-        <b-col cols="4" sm="3" md="2" lg="2" align="center">
-          <div
-            class="image-input"
-            :style="{ 'background-image': `url(${imageData})` }"
-            @click="chooseImage"
-          >
-            <span v-if="!imageData" class="image-area">Insérer une image</span>
-            <input type="file" class="file-input" ref="file" @input="onSelectFile" />
-          </div>
-          <a
-            @click="removeImage"
-            v-show="displayRemoveImage"
-            class="remove-image"
-            href="#"
-            style="display: inline"
-          >&#215;</a>
-        </b-col>
-        <b-col cols="8" sm="9" md="8" lg="8">
-          <b-form-textarea
-            maxlength="2047"
-            id="textarea-rows"
-            placeholder="Que voulez-vous dire ?"
-            @input="lenghtCheck"
-            rows="3"
-            class="text-area"
-            v-model="postTextArea"
-          ></b-form-textarea>
-          <p class="error-message font-weight-bold text-center mt-2">{{ postError }}</p>
-        </b-col>
-        <b-col cols="12" sm="12" md="2" lg="2" align="center">
-          <div class="button-col">
-            <b-button pill size="sm" class="mb-3 send-button" @click="createPost">Envoyer</b-button>
-            <b-button pill size="sm" class="mb-3 reset-button" @click="resetPost">Annuler</b-button>
-          </div>
-        </b-col>
-      </b-row>
-    </div>
-
-    <!--Affichage de l'en-tête d'un utilisateur-->
+    <!--Affichage de l'en-tête d'un utilisateur dans nouvel affichage-->
     <b-row v-show="displayPostByProfile" class="mb-4">
-      <b-col align="center" offset-lg="2" lg="3">
-        <div
-          class="profile-picture mb-2"
-          :style="{ 'background-image': `url(${userProfilePicture})` }"
-          alt="User image"
-        ></div>
-      </b-col>
       <b-col align="center" lg="5">
         <h1>Profil de {{ userName }}</h1>
         <p>{{ userEmail }}</p>
+
         <div>
           <b-button
             pill
@@ -71,24 +27,63 @@
               switchDisplayPostByProfile(false);
               getPosts();
             "
-          >Retour vers le forum</b-button>
+            >Retour vers le forum</b-button
+          >
         </div>
       </b-col>
     </b-row>
 
-    <!--Affichage des posts d'un ou de plusieurs utilisateurs-->
-    <b-row v-for="postData in posts" :key="postData.id" v-show="!displayProfile">
-      <b-col>
-        <Post
-          @users-posts="usersPosts"
-          @post-by-profile="switchDisplayPostByProfile"
-          :post="postData"
-          :admin="admin"
-          :userId="userId"
-          :token="token"
-        ></Post>
-      </b-col>
-    </b-row>
+    <!--Insertion article-->
+    <div v-show="!displayPostByProfile">
+      <b-row v-show="!displayProfile">
+        <b-col>
+          <b-form-textarea
+            maxlength="1000"
+            id="textarea-rows"
+            placeholder="Partagez un texte qui merite d'etre partagé avec vos collègues!"
+            @input="lenghtCheck"
+            rows="3"
+            class="text-area"
+            v-model="postTextArea"
+          ></b-form-textarea>
+
+          <p class="error-message font-weight-bold text-center mt-2">
+            {{ postError }}
+          </p>
+
+          <div>
+            <b-button
+              size="sm"
+              class="mb-2 bg-primary text-white btn-lg btn-block"
+              @click="createPost"
+              >Poster</b-button
+            >
+            <b-button
+              size="sm"
+              class="mb-3 reset-button btn-lg btn"
+              @click="resetPost"
+              >Effacer tout le texte</b-button
+            >
+          </div>
+        </b-col>
+      </b-row>
+      <b-row
+        v-for="postData in posts"
+        :key="postData.id"
+        v-show="!displayProfile"
+      >
+        <b-col>
+          <Post
+            @users-posts="usersPosts"
+            @post-by-profile="switchDisplayPostByProfile"
+            :post="postData"
+            :admin="admin"
+            :userId="userId"
+            :token="token"
+          ></Post>
+        </b-col>
+      </b-row>
+    </div>
   </b-container>
 </template>
  
@@ -111,7 +106,6 @@ export default {
       userName: "",
       userEmail: "",
       displayPostByProfile: false,
-      imageData: null,
       displayCommands: false,
       displayProfile: false,
       posts: [],
@@ -122,15 +116,13 @@ export default {
       error: {},
       postTextArea: "",
       testKey: "",
-      file: "",
     };
   },
   watch: {
-    //Surveille les posts dans le cas de rechargement
+    //Surveille les posts dans changement/rechargement
     posts() {
       if (this.posts !== "undefined" && this.posts.length > 0) {
         //evite erreur si aucun post publié
-        this.userProfilePicture = this.posts[0].userProfilePicture;
         this.userName = this.posts[0].user;
         if (this.posts[0].email.startsWith("ancien employé")) {
           this.userEmail = "";
@@ -139,6 +131,7 @@ export default {
         }
       }
     },
+    //si affichage du profil, alors cache les articles
     displayProfile() {
       if (this.displayProfile === true) {
         this.displayPostByProfile = false;
@@ -149,70 +142,47 @@ export default {
     headers() {
       return { headers: { Authorization: this.token, userId: this.userId } };
     },
-    //data dynamique qui contrôle l'affichage de la croix de suppression de l'image
-    displayRemoveImage() {
-      if (this.imageData) {
-        return true;
-      } else {
-        return false;
-      }
-    },
   },
-  //Validation du state de l'utilisateur
+  //Validation du state de l'utilisateur / donc utilisateur vient apres creation
   created() {
     this.getUser();
   },
-  //construction du composant post
+  //construction du composant post une fois que le dom est monté
   mounted() {
     this.getPosts();
   },
   methods: {
     lenghtCheck() {
-      if (this.postTextArea.length === 2047) {
-        this.postError = "Votre message est trop long";
+      if (this.postTextArea.length > 1000) {
+        this.postError =
+          "Votre message est trop long. Essayez de resumer en un texte plus court";
       } else {
         this.postError = "";
       }
     },
-    removeImage() {
-      this.file = "";
-      this.imageData = null;
-    },
-    chooseImage() {
-      this.$refs.file.click();
-    },
-    onSelectFile() {
-      //fonction qui récupère l'image du stockage du navigateur pour la préparer pour l'afficher et l'enregistrer
-      const input = this.$refs.file;
-      const files = input.files;
-      if (files && files[0]) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          this.imageData = event.target.result;
-        };
-        reader.readAsDataURL(files[0]);
-        this.file = this.$refs.file.files[0];
-      }
-    },
     createPost() {
-      if (!this.postTextArea && !this.imageData) {
-        this.postError = "Votre publication est vide";
+      if (!this.postTextArea) {
+        this.postError = "Votre publication est vide, et ne peut etre creer. ";
         setTimeout(() => {
           this.postError = "";
-        }, 3000);
+        }, 7000);
         return;
       }
+      //FormData sera rempli avec clés/valeurs du formulaire
       let formData = new FormData();
-      formData.append("image", this.file);
       formData.append("content", this.postTextArea);
       formData.append("user_id", this.userId);
-      this.$http.post(url + "posts", formData, this.headers)
+
+      //envoi par post formData puis vider et vider textArea
+      this.$http
+        .post(url + "posts", formData, this.headers)
         .then(() => {
           this.resetPost();
           this.getPosts();
         })
         .catch(() => {
-          this.postError = "Un problème est survenu, veuillez réessayer";
+          this.postError =
+            "Un problème est survenu au moment de la creation de l'article, veuillez réessayer";
         });
     },
     getPosts() {
@@ -222,9 +192,10 @@ export default {
       });
     },
     usersPosts(data) {
-      //charger post par utilisateur
+      //charger post par utilisateur (function a terminer!)
       this.posts = data;
     },
+    //afficher post par profil, ou post juste
     switchDisplayPostByProfile(data) {
       this.displayPostByProfile = data;
     },
@@ -237,7 +208,8 @@ export default {
       if (currentUser) {
         this.token = currentUser.token;
         this.userId = currentUser.userId;
-        this.$http.get(url + "users/" + currentUser.userId, this.headers)
+        this.$http
+          .get(url + "users/" + currentUser.userId, this.headers)
           .then((res) => {
             this.admin = res.data.admin;
           })
@@ -249,14 +221,13 @@ export default {
       }
     },
     resetPost() {
-      this.imageData = null;
-      this.file = "";
       this.postTextArea = "";
-      this.$refs.file.value = "";
     },
   },
 };
 </script>
+
+
 
 
 
